@@ -19,8 +19,9 @@ queries multiple frontier AI providers simultaneously and synthesizes their
 findings into a single report with cross-referenced citations, extracted
 claims, conflict resolution, and follow-on suggestions.
 
-Research is **asynchronous** — jobs take 30 seconds to 10+ minutes depending
-on mode and providers. You MUST poll for completion. Never block.
+Research is **asynchronous** and can take **10-30+ minutes** (multiple
+providers run, then a multi-stage synthesis pipeline). You MUST poll for
+completion, and you MUST tell the user the expected time up front. Never block.
 
 ## Connection
 
@@ -63,9 +64,12 @@ Read these first. They prevent the most common mistakes:
   `research` tool. For follow-up research in the same thread, use the
   `follow_up` tool with the parent `jobId`. Completed research reports are
   immutable and must not be overwritten.
-- **`fast` mode skips synthesis.** It returns a single provider's raw report
-  with no cross-referencing or conflict resolution. Only use when the user
-  explicitly prioritizes speed.
+- **Default to `fast` mode — it's parallel, not shallow.** `fast` runs all the
+  depth's providers at once AND synthesizes; it matches what the Parallect
+  dashboard uses for every tier. `methodical` runs providers one after another
+  with gap-analysis between each — it's far slower (sums provider times instead
+  of overlapping them) and is a legacy opt-in. The `research` tool's own default
+  is still `methodical`, so you MUST pass `mode: "fast"` explicitly.
 
 ## Available Tools
 
@@ -131,8 +135,10 @@ this right builds trust; getting it wrong causes bill shock.
 Call `research` with:
 - `query`: A specific, well-formed research question (see Tips below)
 - `budgetTier`: The tier confirmed in Step 1
-- `mode`: `"methodical"` (default) for multi-provider synthesis. Only use
-  `"fast"` if the user explicitly wants speed over depth.
+- `mode`: **`"fast"` — pass this by default.** It runs the depth's providers in
+  parallel and synthesizes, matching the dashboard. Only pass `"methodical"` if
+  the user explicitly asks for the slowest, most exhaustive sequential
+  cross-check. (You must set this explicitly; the tool defaults to `methodical`.)
 - `providers`: Omit to let Parallect auto-select. Only specify if the user has
   a strong preference for specific providers.
 
@@ -140,8 +146,20 @@ The `research` tool always creates a new thread. Do NOT pass a `threadId`. For
 follow-up research on a completed report, use `follow_up` with the parent
 `jobId` instead.
 
-Save the returned `jobId` and `threadId`. Tell the user: "Research submitted to
-[N] providers. I'll check back on progress in about 30 seconds."
+Save the returned `jobId` and `threadId`. **Set time expectations honestly
+before they wait** — these are real, and longer than people expect:
+
+| Depth | Expect |
+|-------|--------|
+| Nano | ~5-8 min |
+| Lite | ~8-15 min |
+| Normal | ~12-20 min |
+| Deep | ~12-30 min |
+| Max | ~15-45 min |
+
+E.g. "Submitted to [N] providers in parallel. A Deep run usually takes about
+12-30 minutes — I'll check in periodically and let you know when it's done."
+**Ignore the tool's `estimatedDuration` field; it's stale.** Use the ranges above.
 
 ### Step 3: Poll for completion (exponential backoff with jitter)
 
@@ -177,9 +195,10 @@ running...", "All providers done, synthesis is running now...").
 **Shortcut:** If status is `"synthesizing"`, it's almost done. Next check in 30
 seconds.
 
-**Timeout:** If the job hasn't completed after 15 minutes, tell the user and
-offer to keep polling (2-min intervals), check `get_results` for partial
-output, or restart with fewer providers / `fast` mode.
+**Timeout:** Judge against the depth's range above — most runs finish within it.
+Only treat it as stuck if it runs well past the high end (e.g. >40 min for
+Normal, >60 min for Max). Then tell the user and offer to keep polling, check
+`get_results` for partial output, or restart at a lighter depth.
 
 **Silent stall detection:** If 3 consecutive polls return identical progress,
 the job may be stuck. Inform the user and suggest starting fresh.
@@ -252,14 +271,14 @@ steps.
 
 ## Mode Selection
 
-| Mode | When to use | Duration | Output |
-|------|------------|----------|--------|
-| `methodical` | Accuracy and breadth matter (default) | 2-10 min | Multi-provider synthesis with claims and citations |
-| `fast` | User explicitly wants speed | 10-30s | Single provider raw report, no synthesis |
+| Mode | What it does | Use when |
+|------|-------------|----------|
+| `fast` (default) | Runs the depth's providers **in parallel**, then the full synthesis pipeline. Matches the dashboard. | Always, unless the user asks otherwise |
+| `methodical` | Runs providers **sequentially** with gap-analysis between each. Much slower (sums provider times). | Only when the user explicitly wants the deepest, most exhaustive cross-referenced pass and accepts the wait |
 
-Use `methodical` unless the user explicitly asks for speed. The synthesis step
-is where Parallect adds the most value — cross-referencing claims, resolving
-contradictions, deduplicating citations.
+Both modes produce a full multi-provider synthesis with claims and citations.
+The difference is parallel (fast) vs sequential-with-gap-analysis (methodical).
+**Default to `fast`** — same depth of result, without serializing the providers.
 
 ## Session Memory
 
