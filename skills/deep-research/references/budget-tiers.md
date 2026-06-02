@@ -1,67 +1,42 @@
-# Parallect Budget Tiers Reference
+# Parallect Search Depth Reference
 
-Read this file when the user asks about pricing, budget options, or when
-you need to recommend a tier for a specific research question.
+Read this when recommending a depth or when the user asks about pricing/options.
 
-## Tier Details
+Parallect exposes five **search depths** in the dashboard. Present these names
+to the user; the `research` MCP tool takes the mapped `budgetTier`. You bill at
+**actual usage** — the prices below are the standard/typical amount, not a cap.
 
-### XXS — Micro (~$1 max)
-- **Providers:** 1 (cheapest available, typically Perplexity or Gemini Lite)
-- **Mode:** Fast only (no synthesis)
-- **Duration:** ~10-30 seconds
-- **Best for:** Quick factual lookups, single-source verification
-- **Output:** Raw single-provider report, no cross-referencing
+| Depth | Price | Time | `budgetTier` | Best for |
+|-------|-------|------|-------------|----------|
+| Nano | $1.50 | 5-8 min | XXS | Quick fact-check, single-answer lookup |
+| Lite | $2.50 | 8-15 min | XS | Light research with multiple sources |
+| **Normal** (default) | $5.00 | 12-20 min | M | Verified daily-driver research across 5 providers |
+| Deep | $15 | 12-30 min | L | Parallel research across 7 providers, cross-referenced |
+| Max | $30 | 15-45 min | XL | Every provider in parallel, deepest synthesis (investment-grade) |
 
-### XS — Extra Small (~$2 max)
-- **Providers:** 1-2
-- **Mode:** Fast or methodical
-- **Duration:** ~30s-2min
-- **Best for:** Brief overviews, simple comparisons
-- **Output:** Minimal synthesis if methodical
+All depths run multi-provider synthesis. Higher depths add more providers and
+deeper cross-referencing. **Normal is the default** — only go cheaper for quick
+lookups or deeper when the topic genuinely needs breadth.
 
-### S — Small (~$5 max)
-- **Providers:** 2
-- **Mode:** Fast or methodical
-- **Duration:** ~1-3min
-- **Best for:** Standard research questions, topic summaries
-- **Output:** Basic synthesis with some cross-referencing
+## Choosing a depth
 
-### M — Medium (~$15 max) [RECOMMENDED DEFAULT]
-- **Providers:** 3-4
-- **Mode:** Methodical recommended
-- **Duration:** ~3-6min
-- **Best for:** Detailed analysis, competitive research, technical topics
-- **Output:** Full synthesis with claims, citations, conflict resolution
+| Question | Depth |
+|----------|-------|
+| "What is X?" / quick fact-check | Nano |
+| "Give me a quick read on X" | Lite |
+| Most research (default) | Normal |
+| Broad, cross-referenced deep dive / due diligence | Deep |
+| Exhaustive, leave nothing out | Max |
 
-### L — Large (~$30 max)
-- **Providers:** 4-5
-- **Mode:** Methodical
-- **Duration:** ~5-10min
-- **Best for:** Comprehensive deep dives, regulatory research, due diligence
-- **Output:** Extensive synthesis with high citation density
+## Providers
 
-### XL — Extra Large (~$60 max)
-- **Providers:** All available (5-6)
-- **Mode:** Methodical
-- **Duration:** ~8-15min
-- **Best for:** Exhaustive research where no perspective should be missed
-- **Output:** Maximum breadth, all providers contribute
+**Do NOT hardcode or recall provider/model names — they change.** Call
+`list_providers` (optionally with a `budgetTier`) for the live list of
+providers, their current models, strengths, and the per-tier cost cap. Present
+exactly what it returns.
 
-## Tier Selection Heuristics
-
-When helping the user choose a tier:
-
-| Question complexity | Recommended tier |
-|--------------------|-----------------|
-| "What is X?" (factual) | XXS or XS |
-| "Compare X and Y" (simple) | S |
-| "What are the trends in X?" | M |
-| "Analyze the implications of X for Y" | M or L |
-| "Comprehensive review of X including regulatory, technical, and market aspects" | L or XL |
-
-## Provider Strengths
-
-Each provider has different strengths:
+Provider strengths (stable, qualitative — exact model versions come from
+`list_providers`, not this file):
 
 | Provider | Best at |
 |----------|---------|
@@ -70,5 +45,3 @@ Each provider has different strengths:
 | OpenAI | Deep reasoning chains, nuanced analysis |
 | Grok | Real-time X/social data, web search |
 | Anthropic (Claude) | Synthesis quality, careful reasoning |
-
-Higher tiers include more providers, giving broader coverage.

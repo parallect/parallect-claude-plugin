@@ -55,18 +55,17 @@ Just ask Claude naturally:
 Claude will check your balance, agree a budget tier, submit the research, poll
 for completion, and deliver a synthesis with citations — then offer follow-ons.
 
-## Budget tiers
+## Search depth
 
-| Tier | Max cost | Providers | Best for |
-|------|----------|-----------|----------|
-| XXS | ~$1 | 1 | Quick factual lookups |
-| XS | ~$2 | 1-2 | Brief overviews |
-| S | ~$5 | 2 | Standard questions |
-| M | ~$15 | 3-4 | Detailed research (default) |
-| L | ~$30 | 4-5 | Comprehensive analysis |
-| XL | ~$60 | All | Exhaustive multi-provider |
+| Depth | Price | Time | Best for |
+|-------|-------|------|----------|
+| Nano | $1.50 | 5-8 min | Quick fact-check, single-answer lookup |
+| Lite | $2.50 | 8-15 min | Light research with multiple sources |
+| **Normal** (default) | $5.00 | 12-20 min | Verified daily-driver research across 5 providers |
+| Deep | $15 | 12-30 min | Parallel research across 7 providers, cross-referenced |
+| Max | $30 | 15-45 min | Every provider in parallel, deepest synthesis |
 
-Claude suggests a tier based on the question and confirms before spending.
+Billed at actual usage. Claude defaults to Normal and confirms before spending.
 
 ## Tools
 

@@ -48,7 +48,11 @@ Read these first. They prevent the most common mistakes:
 - **`get_results` on a running job is an error.** Don't call it until
   `research_status` returns `"completed"`. You will get `JOB_NOT_COMPLETE`.
 - **You are spending the user's money.** Never submit research without
-  discussing budget first. Even an XXS tier costs ~$1.
+  discussing budget first. Even the cheapest (Nano) tier costs real money.
+- **Never invent provider names, models, or prices.** The provider lineup and
+  pricing change constantly. Get them ONLY from `list_providers` and present
+  exactly what it returns. Reciting model names or dollar figures from memory
+  (e.g. guessing a model version) produces wrong, embarrassing output.
 - **Polling too fast triggers rate limits.** Use exponential backoff with
   jitter (see Step 3). Don't poll every 5 seconds.
 - **Balance check before research is mandatory.** If the user has no balance
@@ -81,35 +85,42 @@ Read these first. They prevent the most common mistakes:
 
 ## Workflow: Running Research
 
-### Step 1: Discuss budget and check balance
+### Step 1: Check balance, then agree a search depth
 
 Before submitting ANY research:
 
-1. Call `balance` to check the user's current credits and payment status.
-2. Call `list_providers` with the anticipated `budgetTier` to show what
-   providers and cost range that tier includes.
-3. Discuss budget with the user, framing it in natural language:
+1. Call `balance` for the user's current credits and payment status.
 
-   | User says... | Map to tier | Max cost | Providers | Duration |
-   |-------------|-------------|----------|-----------|----------|
-   | "quick check", "just a glance" | XXS | ~$1 | 1 provider | ~30s |
-   | "quick look", "brief" | XS | ~$2 | 1-2 providers | ~1min |
-   | "standard", "normal" | S | ~$5 | 2 providers | ~2min |
-   | "thorough", "detailed" | M | ~$15 | 3-4 providers | ~5min |
-   | "comprehensive", "deep" | L | ~$30 | 4-5 providers | ~8min |
-   | "exhaustive", "everything" | XL | ~$60 | All providers | ~10min |
+2. Offer the **search depth** exactly as the Parallect dashboard presents it —
+   five tiers, **Normal is the default**. You bill at actual usage; these are
+   the standard prices:
 
-   For per-tier details, provider strengths, and selection heuristics see
-   `references/budget-tiers.md`.
+   | Depth | Price | Time | For | API `budgetTier` |
+   |-------|-------|------|-----|------------------|
+   | Nano | $1.50 | 5-8 min | Quick fact-check, single-answer lookup | XXS |
+   | Lite | $2.50 | 8-15 min | Light research with multiple sources | XS |
+   | **Normal** (default) | $5.00 | 12-20 min | Verified daily-driver research across 5 providers | M |
+   | Deep | $15 | 12-30 min | Parallel research across 7 providers, cross-referenced | L |
+   | Max | $30 | 15-45 min | Every provider in parallel, deepest synthesis | XL |
 
-4. Tell the user: "Your balance is $X.XX. A [tier] research will cost up to $Y.
-   That will query [providers]. Want to proceed?"
+   When you call `research`, pass the **API `budgetTier`** from the last column
+   (e.g. user picks "Normal" → `budgetTier: "M"`). Default to **Normal** unless
+   the user signals they want cheaper/faster or deeper.
 
-5. If balance is insufficient and no payment method is on file, direct them to
-   https://parallect.ai/settings/billing before proceeding.
+3. To name the specific provider models a depth will use, call `list_providers`
+   and report exactly what it returns. **Never name providers or models from
+   memory** — they change. (`list_providers` also returns the hard cost cap per
+   tier; the prices above are the typical billed amount.) See
+   `references/budget-tiers.md` for provider strengths and selection heuristics.
 
-6. If the user set a budget preference earlier in this session, reuse it
-   silently unless the topic warrants a different tier. Don't ask again.
+4. Confirm with the user: "Your balance is $X.XX. A [depth] run is about
+   $[price], billed at actual usage. Want to proceed?"
+
+5. If balance is insufficient and no payment method is on file, point them to
+   https://parallect.ai/settings/billing first.
+
+6. Reuse an earlier-stated depth preference silently unless the topic warrants a
+   different one.
 
 **Why this matters:** You are spending real money on the user's behalf. Never
 auto-submit research without first establishing budget expectations. Getting
