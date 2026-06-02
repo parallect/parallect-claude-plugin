@@ -1,15 +1,14 @@
 ---
 name: deep-research
 description: >
-  Deep research across multiple frontier AI models in parallel (Perplexity,
-  ChatGPT, Claude, Gemini, Grok), synthesized into one report with
-  cross-referenced citations, extracted claims, and conflict resolution. Use
-  when the user wants to research a topic, investigate a question, fact-check a
-  claim, or needs comprehensive sourced multi-perspective analysis. Triggers on
-  things like "research this", "look this up", "find out about", "deep dive on",
-  "fact-check this", or "what do we know about". Do NOT use for simple factual
-  questions answerable from memory — only for topics needing sourced,
-  multi-perspective analysis.
+  Use when the user wants to research a topic, investigate a question,
+  fact-check a claim, or needs sourced multi-perspective analysis. Triggers on
+  "research this", "look this up", "find out about", "deep dive on",
+  "fact-check this", "what do we know about". Runs deep research across multiple
+  frontier AI models in parallel (Perplexity, ChatGPT, Claude, Gemini, Grok) and
+  synthesizes one cross-referenced report with citations and conflict
+  resolution. Do NOT use for simple factual questions answerable from memory --
+  only for topics needing sourced, multi-perspective analysis.
 ---
 
 # Parallect Deep Research

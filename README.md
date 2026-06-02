@@ -1,17 +1,23 @@
 # Parallect for Claude Code
 
-A [Claude Code](https://claude.com/claude-code) plugin that gives Claude a
-**deep-research** skill backed by [Parallect](https://parallect.ai) — a
-multi-provider research platform that queries Perplexity, ChatGPT, Claude,
-Gemini, and Grok in parallel, then synthesizes their findings into one report
-with cross-referenced citations and conflict resolution.
+Ask any research question and get one cited report, cross-checked across
+**Perplexity, ChatGPT, Claude, Gemini, and Grok at once** — so the confident
+wrong answer a single model gives you gets caught before it reaches the page.
+Deep research and fact-checking, without leaving Claude.
 
-The plugin bundles two things:
+> _Demo: add a 30-second GIF/video of a research run here._
 
-- A **`deep-research` skill** that teaches Claude how to run research
-  responsibly (budget first, async polling, citations, follow-ons).
-- The **Parallect MCP server** config, so the research tools are available the
-  moment you install.
+**Before:** open five tabs, run the same question through each AI, guess which
+answer to trust, stitch it together yourself.
+
+**After:** `research X` — Parallect fans out to all of them in parallel,
+reconciles where they disagree, and hands Claude one sourced report.
+
+This is a [Claude Code](https://claude.com/claude-code) plugin bundling:
+
+- A **`deep-research` skill** that runs research responsibly (agree a budget,
+  poll asynchronously, present citations, offer follow-ons).
+- The **Parallect MCP server** config, so the tools work the moment you install.
 
 ## Install
 
