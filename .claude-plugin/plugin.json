@@ -1,0 +1,12 @@
+{
+  "name": "parallect",
+  "description": "Deep research across multiple frontier AI models in parallel (Perplexity, ChatGPT, Claude, Gemini, Grok), synthesized into one report with cross-referenced citations and conflict resolution. Use for sourced, multi-perspective research and fact-checking.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Parallect",
+    "url": "https://parallect.ai"
+  },
+  "homepage": "https://parallect.ai",
+  "repository": "https://github.com/parallect/parallect-claude-plugin",
+  "license": "MIT"
+}

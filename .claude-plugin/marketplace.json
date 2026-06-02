@@ -1,0 +1,18 @@
+{
+  "name": "parallect",
+  "description": "Official Parallect plugins for Claude Code — deep research across multiple frontier AI models.",
+  "owner": {
+    "name": "Parallect",
+    "url": "https://parallect.ai"
+  },
+  "plugins": [
+    {
+      "name": "parallect",
+      "source": {
+        "source": "github",
+        "repo": "parallect/parallect-claude-plugin"
+      },
+      "description": "Deep research across multiple frontier AI models in parallel, synthesized into one report with cross-referenced citations and conflict resolution."
+    }
+  ]
+}
